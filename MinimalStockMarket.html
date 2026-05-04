@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Stock Market Simulator</title>
+  <style>
+  :root {
+    --gold: #c5a059;
+    --gold-light: #dfbf84;
+    --racing-green: #1a3026;
+    --racing-green-light: #244234;
+    --bg-black: #0a0a0a;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-black);
+    color: white;
+    font-family:"Didot", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+  }
+
+  /* Dashboard Header Styling */
+  #bank-amount {
+    font-size: 32px;
+    font-weight: 300;
+    margin-bottom: 5px;
+    color: var(--gold-light);
+  }
+
+  #stocks-owned {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+  }
+
+  #message {
+    height: 20px; /* Prevents layout jump when message appears */
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #4ade80;
+    font-family:"Didot", Consolas, monospace;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* The Graph - Made wider and sleeker */
+  #graph-container {
+    width: 160px;
+    height: 350px;
+    background-color: #111;
+    border: 1px solid #333;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  #graph-container:hover {
+    border-color: var(--gold);
+    transform: scale(1.02);
+  }
+
+  #bar {
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to top, var(--racing-green), var(--gold));
+    position: absolute;
+    bottom: 0;
+    transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  }
+
+  /* Buttons - Luxe Serif Style */
+  #buttons {
+    margin-top: 50px;
+    display: flex;
+    gap: 15px;
+  }
+
+  button {
+    padding: 14px 32px;
+    font-family: "Didot", "Playfair Display", serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #ffffff;
+    background-color: var(--racing-green);
+    border: 1px solid var(--gold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: var(--gold);
+    color: var(--bg-black);
+    transform: translateY(-3px);
+  }
+
+  button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    filter: grayscale(1);
+  }
+
+  /* Top Navigation Links Currently Redundant*/
+  .top-nav {
+    position: absolute;
+    top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    box-sizing: border-box;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.6;
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.3s;
+  }
+
+  a:hover {
+    opacity: 1;
+    color: var(--gold);
+  }
+.coffee{font-family:"Didot";}
+.disc{font-family:"Didot";}
+.bankamt{font-family:"Didot",Calibri;}
+</style>
+</head>
+<body>
+
+
+  <div id="bank-amount",class="bankamt">Bank: $100</div>
+  <div id="message"></div>
+  <div id="stocks-owned">Stocks Owned: 0</div>
+  <div id="graph-container">
+    <div id="bar"></div>
+  </div>
+  <div id="buttons">
+    <button id="buy">Buy</button>
+    <button id="sell">Sell</button> 
+  </div>
+
+  <script>
+    let bankAmount = 100;
+    let stocksOwned = 0;
+    let stockValue = 50; // Initial stock value
+    const bar = document.getElementById('bar');
+    const bankDisplay = document.getElementById('bank-amount');
+    const stocksDisplay = document.getElementById('stocks-owned');
+    const sellButton = document.getElementById('sell');
+    const messageDisplay = document.getElementById('message');
+
+    // Function to update the stock value and bar height
+    function updateStockValue() {
+  const volatility = 0.2; 
+  const changePercent = 2 * volatility * Math.random() - volatility;
+  stockValue += stockValue * changePercent;
+
+      stockValue = Math.max(0, Math.min(100, stockValue)); // Keep value between 0 and 100
+      bar.style.height = `${stockValue}%`;
+      setTimeout(updateStockValue, 1000); // Update every second
+    }
+
+    // Calculate profit/loss based on stock value
+    function calculateProfitLoss() {
+      const breakeven = 50; // Breakeven point (50%)
+      if (stockValue > breakeven) {
+        // Profit increases as the bar goes higher
+        const profitMultiplier = (stockValue - breakeven) / 50; // Scale profit based on how far above breakeven
+        return 10 + Math.round(10 * profitMultiplier); // Base $10 + additional profit
+      } else if (stockValue < breakeven) {
+        // Loss increases as the bar goes lower
+        const lossMultiplier = (breakeven - stockValue) / 50; // Scale loss based on how far below breakeven
+        return 10 - Math.round(10 * lossMultiplier); // Base $10 - additional loss
+      } else {
+        return 10; // Breakeven, no profit or loss
+      }
+    }
+
+    // Function to display a temporary message
+    function showMessage(message) {
+      messageDisplay.textContent = message;
+      messageDisplay.style.opacity = 0.9;
+      setTimeout(() => {
+        messageDisplay.style.opacity = 0;
+      }, 1000);
+    }
+
+    // Function to handle buying stocks
+    document.getElementById('buy').addEventListener('click', () => {
+      if (bankAmount >= 10) {
+        bankAmount -= 10;
+        stocksOwned += 1;
+        bankDisplay.textContent = `Bank: $${bankAmount}`;
+        stocksDisplay.textContent = `Stocks Owned: ${stocksOwned}`;
+        sellButton.disabled = false; // Enable sell button
+        showMessage('Stock bought!');
+      } else {
+        showMessage('Not enough funds!');
+      }
+    });
+
+    // Function to handle selling stocks
+    document.getElementById('sell').addEventListener('click', () => {
+      if (stocksOwned > 0) {
+        const profitLoss = calculateProfitLoss();
+        bankAmount += profitLoss;
+        stocksOwned -= 1;
+      bankDisplay.textContent = `Bank: $${bankAmount}`;
+
+        stocksDisplay.textContent = `Stocks Owned: ${stocksOwned}`;
+        if (stocksOwned === 0) {
+          sellButton.disabled = true; // Disable sell button if no stocks are owned
+        }
+        const message = `Stock sold! ${profitLoss >= 10 ? 'Profit' : 'Loss'}: $${Math.abs(profitLoss - 10)}`;
+        showMessage(message);
+      } else {
+        showMessage('No stocks to sell!');
+      }
+    });
+
+    // Parallax effect on mouse move
+    document.body.addEventListener('mousemove', (e) => {
+      const y = e.clientY - window.innerHeight / 2; // Calculate mouse Y position relative to center
+      document.body.style.setProperty('--mouse-y', y);
+    });
+
+    // Start updating the stock value
+    updateStockValue();
+    // And thats about it!
+    // A well written and clean script if I do say so myself!
+  </script>
+
+</body>
+</html>

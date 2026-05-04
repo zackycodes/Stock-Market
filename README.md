@@ -1,5 +1,3 @@
-To capture the sophisticated, minimalist aesthetic of your Stock Market Simulator—which uses a palette of racing green, gold, and deep blacks with serif typography —here is a README designed to match that "luxe" feel.
-
 # Stock Market Simulator
 
 A minimalist, high-stakes financial simulation built with a focus on elegant design and fluid interactions. Experience the volatility of the market through a refined, "Racing Green" and "Gold" aesthetic.

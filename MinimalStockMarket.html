@@ -126,6 +126,18 @@
     opacity: 0.6;
   }
 
+  .separator {
+  position:fixed;
+  top:25px;
+  left:67px;
+  width: 2px;               /* Adjust thickness here */
+  height: 24px;             /* Match this to your icon height */
+  background-color: rgba(128, 128, 128, 0.4); /* Grey with 40% opacity */
+  margin: 0 10px;           /* Spacing on the left and right */
+  vertical-align: middle;   /* Aligns it perfectly with icons */
+  border-radius: 1px;       /* Optional: rounds the edges slightly */
+}
+
   a {
     text-decoration: none;
     color: white;
@@ -136,12 +148,73 @@
     opacity: 1;
     color: var(--gold);
   }
-.coffee{font-family:"Didot";}
+
 .disc{font-family:"Didot";}
 .bankamt{font-family:"Didot",Calibri;}
+
+.luxe-coffee-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;              
+  transition: transform 0.5s cubic-bezier(0.08, -0.15, 0.4, 0.95);
+}
+.luxe-coffee-btn:hover {
+  transform: scale(2.5);
+  transform: rotate(20deg)
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+.luxe-coffee-btn .icon {
+  font-size: 1.2rem;
+  filter: sepia(3) saturate(2) hue-rotate(10deg); /* Makes the emoji look slightly golden */
+}
+
+.wiki-btn {
+  position: fixed;
+  top: 22px;
+  left: 100px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  /*padding: 12px 24px;              */
+  transition: transform 0.5s cubic-bezier(0.08, -0.15, 0.4, 0.95);
+}
+.wiki-btn:hover {
+  transform: scale(2.5);
+  transform: rotate(20deg)
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+.wiki-btn .icon {
+  font-size: 1.2rem;
+  filter: sepia(6) hue-rotate(10deg);
+}
+
+
+
+
+
 </style>
 </head>
 <body>
+<a href="YOUR_BUY_ME_A_COFFEE_URL" class="luxe-coffee-btn">
+  <span class="icon">☕</span>
+
+</a>
+  <div class="icon-container">
+  <i class="icon-home"></i> 
+  <span class="separator"></span>
+  <i class="icon-user"></i>
+  </div>
+
+<a href="https://en.wikipedia.org/wiki/Investment#Investment_strategies" class="wiki-btn">
+  <span class="icon">📖</span>
+</a>
+
 
 
   <div id="bank-amount",class="bankamt">Bank: $100</div>
